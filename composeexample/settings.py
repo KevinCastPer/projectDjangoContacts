@@ -12,8 +12,18 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+# LOGGING_CONFIG  =  None
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# STATICFILES_DIRS = (os.path.join(
+#     BASE_DIR, "contacts", "static"),)
+# STATIC_ROOT = os.path.join(
+#     os.path.dirname(BASE_DIR), "deployment", "collected_static")
+# MEDIA_ROOT = os.path.join(
+#     os.path.dirname(BASE_DIR), "deployment", "media")
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -104,6 +114,62 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Logging debug
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    # 'filters': {
+    #     'special': {
+    #         '()': 'project.logging.SpecialFilter',
+    #         'foo': 'bar',
+    #     },
+    #     'require_debug_true': {
+    #         '()': 'django.utils.log.RequireDebugTrue',
+    #     },
+    # },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'simple',
+        },
+        # 'mail_admins': {
+        #     'level': 'DEBUG',
+        #     'class': 'django.utils.log.AdminEmailHandler',
+        #     'filters': ['special']
+        # }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        # 'django.request': {
+        #     'handlers': ['mail_admins'],
+        #     'level': 'DEBUG',
+        #     'propagate': False,
+        # },
+        # 'myproject.custom': {
+        #     'handlers': ['file', 'mail_admins'],
+        #     'level': 'DEBUG',
+        #     'filters': ['special']
+        # }
+    }
+
+
+}
 
 
 # Internationalization
