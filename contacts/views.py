@@ -22,18 +22,18 @@ def formContact(request):
             contact = form.save(commit=False)
             contact.save()
             return redirect('contacts:index')
-        else:
-            form = ContactForm()
+    else:
+        form = ContactForm()
     return render(request, 'contacts/formContact.html', {'form': form})
 
 def editContact(request, contact_id):
     contact = get_object_or_404(Contact, pk=contact_id)
-    form = ContactForm(request.POST, instance=contact)
     if request.method == "POST":
+        form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
             contact = form.save(commit = False)
             contact.save()
             return redirect('contacts:index')
-        else:
-            form = ContactForm(instance=contact)
+    else:
+        form = ContactForm(instance=contact)
     return render(request, 'contacts/formContact.html', {'form': form})
