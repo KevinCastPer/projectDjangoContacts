@@ -1,11 +1,19 @@
-{% if list_contact %}
-    <ul>
-    {% for contact in list_contact %}
-        <li><a href="{% url 'contacts:detail' contact.id %}">{{ contact.nameContact }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+{% extends 'base.html' %}
 
-<a href="{% url 'contacts:formContact' %}">Añadir nuevo contacto</a>
+    {% block head %}
+    <title>Lista de Contactos</title>
+    {% endblock %}
+
+    {% block body %}
+    <h1>lista de contactos</h1>
+    {% if list_contact %}
+        <ul>
+        {% for contact in list_contact %}
+            <li><a href="{% url 'contacts:detail' contact.id %}">{{ contact.nameContact }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+    <a href="{% url 'contacts:formContact' %}">Añadir nuevo contacto</a><br/><br/>
+    {% endblock %}

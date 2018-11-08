@@ -1,6 +1,14 @@
-<h1>Nuevo contacto</h1>
+{% extends 'base.html' %}
 
-<form  method = "POST">
-  {% csrf_token %}
-  {{ form.as_p}}
-<input type="submit" value="insertar" />
+    {% block head %}
+    <title>Formulario</title>
+    {% endblock %}
+
+    {% block body %}
+    <h1>Nuevo contacto</h1>
+
+    <form  method = "POST">
+      {% csrf_token %}
+      {{ form.as_p}}
+    <input type="submit" value="insertar" />
+    {% endblock %}

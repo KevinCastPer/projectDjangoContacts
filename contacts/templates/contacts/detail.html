@@ -1,8 +1,17 @@
-<a href="{% url 'contacts:formContact' contact.id %}">Editar {{ contact.nameContact }}</a>
-<h1>El contacto es {{ contact.nameContact }}</h1>
-<ul>
-    <li>Nombre: {{ contact.nameContact }}</li>
-    <li>Correo Electronico: {{ contact.email }}</li>
-    <li>Telefono: {{ contact.phone}}</li>
-    <li>Mensaje: {{ contact.message }}</li>
-</ul>
+{% extends 'base.html' %}
+
+    {% block head %}
+    <title>Detalle de contacto</title>
+    {% endblock %}
+
+    {% block body %}
+    <h2>detalle de contacto</h2>
+    <h2><a href="{% url 'contacts:formContact' contact.id %}">Editar {{ contact.nameContact }}</a></h2>
+    <h1>El contacto es {{ contact.nameContact }}</h1>
+    <ul>
+        <li>Nombre: {{ contact.nameContact }}</li>
+        <li>Correo Electronico: {{ contact.email }}</li>
+        <li>Telefono: {{ contact.phone}}</li>
+        <li>Mensaje: {{ contact.message }}</li>
+    </ul>
+    {% endblock %}
