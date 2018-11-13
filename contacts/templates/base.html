@@ -93,6 +93,44 @@
                 }
               );
               });
+
+          function listContact(){
+            $.ajax(
+              {
+                  dataType:"json",
+                  url:"/api/contacts/",
+                  type:"GET",
+                  // data: list_contact
+              })
+              .done(
+                // <ul class="list-group">
+                // {% for contact in list_contact %}
+                //     <li class ="list-group-item list-group-item-light"><a class="nav-link" href="{% url 'contacts:detail' contact.id %}">{{ contact.nameContact }}</a></li>
+                // {% endfor %}
+                // </ul>
+                  function(data){
+                    $.each(data, function(index, value){
+                      console.log(value);
+                      var idContact = value.id;
+                      var nameContact = value.nameContact;
+
+                      $(".listContactGroup").append('<li class ="list-group-item list-group-item-light"><a class="nav-link" href=" /contacts/'+idContact+'">'+nameContact+'</a></li>');
+                    });
+                    alert("done")
+              }
+              )
+              .fail(
+                  function(data){
+                    alert("error: no view list");
+                  }
+              )
+              .always(
+                  function(data){
+                    alert("list successfully")
+                  }
+              )
+          };
+          listContact();
             });
       </script>
       {% endblock %}
