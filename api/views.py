@@ -1,4 +1,4 @@
-# from rest_framework import status, mixins, generics
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 # from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -6,12 +6,11 @@ from rest_framework.response import Response
 from django.http import Http404
 from contacts.models import Contact
 from .serializers import ContactSerializer
-from .permissions import IsOwnerOrReadOnly
 
 
 class ContactMixin(object):
-        queryset = Contact.objects.all()
-        serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
 
 
 class ContactList(ContactMixin, ListCreateAPIView):
@@ -20,6 +19,18 @@ class ContactList(ContactMixin, ListCreateAPIView):
     """
 
     def get(self, request, *args, **kwargs):
+        # Si solo queremos que el administrador vea eso, tiene pinta que aquí hay que tocar algo
+        # como se si el usuario esta autenticado o no? pues en request hay siempre el objeto user
+        # y pregunto
+
+        if request.user.is_anonymous and not request.user.is_staff:
+            # staff => admin si esta loqueado se puede ver lista sino no.
+            # anonymous => anonymous tampoco podran verlo
+            # hay que devolver un "return" pero algo especial, porque tiene que indicar error 403
+            # busca en la documentacion de django rest framework sobre ello
+            # como devolver un error
+            # si, tambien vale, pero no el 404, sino el 403
+            return Response(status=status.HTTP_403_FORBIDDEN)
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -56,9 +67,6 @@ class ContactDetails(ContactMixin, RetrieveUpdateDestroyAPIView):
         contact = self.get_object(contact_id)
         contact.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
 
 
 # class ContactList(APIView):
