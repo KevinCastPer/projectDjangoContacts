@@ -243,3 +243,12 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
     'JWT_AUTH_COOKIE': None,
 }
+
+# send email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'mailhog'
+EMAIL_PORT = 1025
+# EMAIL_HOST_USER = 'kevin@gmail.com'
+# EMAIL_HOST_PASSWORD = 'adminkevin'
+DEFAULT_FROM_EMAIL = 'kevin@gmail.com'

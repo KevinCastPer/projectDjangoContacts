@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from django.http import Http404
 from contacts.models import Contact
 from .serializers import ContactSerializer
+from django.core.mail import send_mail
 
 
 class ContactMixin(object):
@@ -34,7 +35,27 @@ class ContactList(ContactMixin, ListCreateAPIView):
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+        # esto es lo q se está ejecuntado
+        # console.log(contact)
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            contact = serializer.save()
+            subject = "Gracias por registrar Formulario"
+            emailTo = contact.email
+            print('**************')
+            print(emailTo)
+            send_mail(
+                subject,
+                'Muchas gracias por contactar. Nos pondemos en contacto lo antes posible',
+                'kevin@gmail.com',
+                [emailTo],
+                fail_silently=False,
+            )
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class ContactDetails(ContactMixin, RetrieveUpdateDestroyAPIView):
