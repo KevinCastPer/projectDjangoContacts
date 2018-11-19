@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from django.http import Http404
 from contacts.models import Contact
 from .serializers import ContactSerializer
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 class ContactMixin(object):
@@ -40,17 +41,33 @@ class ContactList(ContactMixin, ListCreateAPIView):
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():
             contact = serializer.save()
-            subject = "Gracias por registrar Formulario"
             emailTo = contact.email
             print('**************')
             print(emailTo)
-            send_mail(
-                subject,
-                'Muchas gracias por contactar. Nos pondemos en contacto lo antes posible',
-                'kevin@gmail.com',
-                [emailTo],
-                fail_silently=False,
-            )
+            subject = "Gracias por registrar Formulario"
+            emailTo = contact.email
+            html_content = '<p>This is an <strong>important</strong> message.</p>'
+            # text_content = "Muchas gracias por contactar. Nos pondemos en contacto lo antes posible"
+            email_template_name = "contacts/email.html"
+            body = render_to_string(email_template_name)
+            # print(emailTo)
+            # logger.info("DEBUG EMAILTO ######################################################################### ")
+            # logger.debug("VER DEBUG ############################################## %s ", emailTo)
+            # (emailTo, flush=True)
+            msg = EmailMultiAlternatives(subject, body, 'kevin@gmail.com', [emailTo])
+            print("@@@@@@@@")
+            print(msg)
+            msg.attach_alternative(body, "text/html")
+            msg.send()
+
+            # enviar email predeterminado sin plantilla
+            # send_mail(
+            #     subject,
+            #     'text_content,
+            #     'kevin@gmail.com',
+            #     [emailTo],
+            #     fail_silently=False,
+            # )
             serializer.save()
             return Response(serializer.data)
         else:
