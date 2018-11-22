@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet" integrity="{{ site.cdn.css_hash }}" crossorigin="anonymous">
     <link href="{% static 'dist/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'contacts/style.css' %}" rel="stylesheet">
 
     <!-- Documentation extras -->
     <link href="{% static 'assets/css/docs.min.css' %}" rel="stylesheet">
@@ -27,7 +28,7 @@
             <a class="nav-link" href="#">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">Agenga</a>
+            <a class="nav-link" href="#">Agenga</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Contacto</a>
@@ -44,6 +45,7 @@
     <div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="{% static 'JQuerry3.3.1/jquery-3.3.1.min.js' %}"></script>
       <script src="{% static 'assets/js/vendor/popper.min.js' %}"{% if site.github %} integrity="{{ site.cdn.popper_hash }}" crossorigin="anonymous"{% endif %}></script>
       <script src="{% static 'dist/js/bootstrap.min.js' %}" integrity="{{ site.cdn.js_hash }}" crossorigin="anonymous"></script>
       <script src="{% static 'dist/js/bootstrap.js' %}"></script>
@@ -54,8 +56,83 @@
       <script src="{% static 'assets/js/src/application.js' %}"></script>
       <script src="{% static 'assets/js/src/ie-emulation-modes-warning.js' %}"></script>
       <script src="{% static 'assets/js/src/pwa.js' %}"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+      {% block body_scripts %}
+      <script>
+       $(document).ready(function() {
+         $("#target").submit(function(event){
+           event.preventDefault();
+           var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+           var datos = {
+             "nameContact": $("#nameContact").val(),
+             "email": $("#email").val(),
+             "phone": $("#phone").val(),
+             "message": $("#message").val()
+           }
+            $.ajax(
+              {
+                url:"/api/contacts/",
+                type: "POST",
+                data: JSON.stringify(datos),
+                contentType:'application/json; charset=utf-8',
+                dataType: 'json',
+                headers:{"X-CSRFToken": $crf_token}
+              })
+              .done(
+                function(data){
+                  $("#respuesta").html(data.nameContact)
+                }
+              )
+              .fail(
+                function(data){
+                  alert("error: " + data.nameContact);
+                }
+              )
+              .always(
+                function(data){
+                  alert("añadido: " + data.nameContact);
+                }
+              );
+              });
+
+          function listContact(){
+            $.ajax(
+              {
+                  dataType:"json",
+                  url:"/api/contacts/",
+                  type:"GET",
+                  // data: list_contact
+              })
+              .done(
+                // <ul class="list-group">
+                // {% for contact in list_contact %}
+                //     <li class ="list-group-item list-group-item-light"><a class="nav-link" href="{% url 'contacts:detail' contact.id %}">{{ contact.nameContact }}</a></li>
+                // {% endfor %}
+                // </ul>
+                  function(data){
+                    $.each(data, function(index, value){
+                      console.log(value);
+                      var idContact = value.id;
+                      var nameContact = value.nameContact;
+
+                      $(".listContactGroup").append('<li class ="list-group-item list-group-item-light"><a class="nav-link" href=" /contacts/'+idContact+'">'+nameContact+'</a></li>');
+                    });
+                    alert("done")
+              }
+              )
+              .fail(
+                  function(data){
+                    alert("error: no view list");
+                  }
+              )
+              .always(
+                  function(data){
+                    alert("list successfully")
+                  }
+              )
+          };
+          listContact();
+            });
+      </script>
+      {% endblock %}
   </body>
 </html>

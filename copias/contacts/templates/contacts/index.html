@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+    {% block head %}
+    <title>Lista de Contactos</title>
+    {% endblock %}
+
+    {% block body %}
+    <br/>
+    <h1 class="mb-3">Lista de contactos</h1>
+    <button class ="btn btn-lg mb-3"><a class="nav-link" href="{% url 'contacts:formContact' %}">Añadir nuevo contacto</a></button>
+    {% if list_contact %}
+        <ul class="list-group">
+        {% for contact in list_contact %}
+            <li class ="list-group-item list-group-item-light"><a class="nav-link" href="{% url 'contacts:detail' contact.id %}">{{ contact.nameContact }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+
+    <h1 id="respuesta"></h1>
+    {% endblock %}

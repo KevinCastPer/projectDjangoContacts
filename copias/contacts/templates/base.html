@@ -1,0 +1,100 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet" integrity="{{ site.cdn.css_hash }}" crossorigin="anonymous">
+    <link href="{% static 'dist/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'contacts/style.css' %}" rel="stylesheet">
+
+    <!-- Documentation extras -->
+    <link href="{% static 'assets/css/docs.min.css' %}" rel="stylesheet">
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    {% block head %}
+    <title>Hello, world!</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div class = "container">
+    <header>
+      <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Agenga</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    {% block body %}
+    <h1>Hello, world!</h1>
+    {% endblock %}
+    <div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="{% static 'JQuerry3.3.1/jquery-3.3.1.min.js' %}"></script>
+      <script src="{% static 'assets/js/vendor/popper.min.js' %}"{% if site.github %} integrity="{{ site.cdn.popper_hash }}" crossorigin="anonymous"{% endif %}></script>
+      <script src="{% static 'dist/js/bootstrap.min.js' %}" integrity="{{ site.cdn.js_hash }}" crossorigin="anonymous"></script>
+      <script src="{% static 'dist/js/bootstrap.js' %}"></script>
+      <script src="{% static 'assets/js/docs.min.js' %}"></script>
+      <script src="{% static 'assets/js/vendor/anchor.min.js' %}"></script>
+      <script src="{% static 'assets/js/vendor/clipboard.min.js' %}"></script>
+      <script src="{% static 'assets/js/vendor/holder.min.js' %}"></script>
+      <script src="{% static 'assets/js/src/application.js' %}"></script>
+      <script src="{% static 'assets/js/src/ie-emulation-modes-warning.js' %}"></script>
+      <script src="{% static 'assets/js/src/pwa.js' %}"></script>
+      {% block body_scripts %}
+      <script>
+       $(document).ready(function() {
+         $("#target").submit(function(event){
+           event.preventDefault();
+           var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+           var datos = {
+             "nameContact": $("#nameContact").val(),
+             "email": $("#email").val(),
+             "phone": $("#phone").val(),
+             "message": $("#message").val()
+           }
+            $.ajax(
+              {
+                url:"/api/contacts/",
+                type: "POST",
+                data: JSON.stringify(datos),
+                contentType:'application/json; charset=utf-8',
+                dataType: 'json',
+                headers:{"X-CSRFToken": $crf_token}
+              })
+              .done(
+                function(data){
+                  $("#respuesta").html(data.nameContact)
+                }
+              )
+              .fail(
+                function(data){
+                  alert("error: " + data.nameContact);
+                }
+              )
+              .always(
+                function(data){
+                  alert("añadido: " + data.nameContact);
+                }
+              );
+              });
+            });
+      </script>
+      {% endblock %}
+  </body>
+</html>
